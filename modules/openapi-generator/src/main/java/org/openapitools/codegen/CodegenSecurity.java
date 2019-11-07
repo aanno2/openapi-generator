@@ -28,7 +28,7 @@ public class CodegenSecurity {
     public String name;
     public String type;
     public String scheme;
-    public Boolean hasMore, isBasic, isOAuth, isApiKey;
+    public Boolean hasMore, isBasic, isOAuth, isOpenIdConnect, isApiKey;
     // is Basic is true for all http authentication type. Those are to differentiate basic and bearer authentication
     public Boolean isBasicBasic, isBasicBearer;
     public String bearerFormat;
@@ -61,6 +61,7 @@ public class CodegenSecurity {
             Objects.equals(isBasicBearer, that.isBasicBearer) &&
             Objects.equals(bearerFormat, that.bearerFormat) &&
             Objects.equals(isOAuth, that.isOAuth) &&
+            Objects.equals(isOpenIdConnect, that.isOpenIdConnect) &&
             Objects.equals(isApiKey, that.isApiKey) &&
             Objects.equals(vendorExtensions, that.vendorExtensions) &&
             Objects.equals(keyParamName, that.keyParamName) &&
@@ -87,6 +88,7 @@ public class CodegenSecurity {
             isBasicBearer,
             bearerFormat,
             isOAuth,
+            isOpenIdConnect,
             isApiKey,
             vendorExtensions,
             keyParamName,

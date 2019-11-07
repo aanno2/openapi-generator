@@ -3408,7 +3408,7 @@ public class DefaultCodegen implements CodegenConfig {
             cs.scheme = securityScheme.getScheme();
 
             if (SecurityScheme.Type.APIKEY.equals(securityScheme.getType())) {
-                cs.isBasic = cs.isOAuth = false;
+                cs.isBasic = cs.isOAuth = cs.isOpenIdConnect = false;
                 cs.isApiKey = true;
                 cs.keyParamName = securityScheme.getName();
                 cs.isKeyInHeader = securityScheme.getIn() == SecurityScheme.In.HEADER;
@@ -3449,6 +3449,13 @@ public class DefaultCodegen implements CodegenConfig {
                 } else {
                     throw new RuntimeException("Could not identify any oauth2 flow in " + cs.name);
                 }
+            } else if (SecurityScheme.Type.OPENIDCONNECT.equals(securityScheme.getType())) {
+                cs.isKeyInHeader = cs.isKeyInQuery = cs.isKeyInCookie = cs.isApiKey = cs.isBasic = false;
+                cs.isOpenIdConnect = true;
+                // ???
+                cs.isOAuth = true;
+                cs.isCode = true;
+                cs.flow = "accessCode";
             }
 
             codegenSecurities.add(cs);
