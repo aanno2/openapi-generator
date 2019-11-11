@@ -29,8 +29,6 @@ public class OpenIdConnect {
     private String authorizationUrl;
     private String tokenUrl;
 
-    private List<String> flows = new ArrayList<>();
-
     public OpenIdConnect(DefaultCodegen codegen, String url) throws MalformedURLException {
         this.codegen = codegen;
         this.discovery = new URL(url);
@@ -87,27 +85,37 @@ public class OpenIdConnect {
         flow = flow.authorizationUrl(authorizationUrl).tokenUrl(tokenUrl).scopes(flowScopes);
         // cs.scopes = ;
 
-        if (flows.isEmpty()) {
+        if (grantTypes.isEmpty()) {
             throw new RuntimeException("missing oauth flow in " + cs.name);
         }
-        if (flows.contains("password")) {
+        // Can be all of this at the same time!
+        boolean grantTypeSet = false;
+        if (grantTypes.contains("password")) {
             codegen.setOauth2Info(cs, flow);
             cs.isPassword = true;
             cs.flow = "password";
-        } else if (flows.contains("implicit")) {
+            grantTypeSet = true;
+        }
+        if (grantTypes.contains("implicit")) {
             codegen.setOauth2Info(cs, flow);
             cs.isImplicit = true;
             cs.flow = "implicit";
-        } else if (flows.contains("client_credentials")) {
+            grantTypeSet = true;
+        }
+        if (grantTypes.contains("client_credentials")) {
             codegen.setOauth2Info(cs, flow);
             cs.isApplication = true;
             cs.flow = "application";
-        } else if (flows.contains("authorization_code")) {
+            grantTypeSet = true;
+        }
+        if (grantTypes.contains("authorization_code")) {
             codegen.setOauth2Info(cs, flow);
             cs.isCode = true;
             cs.flow = "accessCode";
-        } else {
-            throw new RuntimeException("Could not identify any oauth2 flow in " + cs.name);
+            grantTypeSet = true;
+        }
+        if (!grantTypeSet) {
+            throw new RuntimeException("Could not identify any openIdConnect flow in " + cs.name);
         }
     }
 

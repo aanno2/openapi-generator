@@ -3458,7 +3458,6 @@ public class DefaultCodegen implements CodegenConfig {
                 // we need to implement https://openid.net/specs/openid-connect-discovery-1_0.html
                 // and fill out our standard oauth2 stuff https://swagger.io/docs/specification/authentication/oauth2/
                 // from .well-known/openid-configuration
-
                 try {
                     OpenIdConnect openIdConnect = new OpenIdConnect(this,
                             securityScheme.getOpenIdConnectUrl()).retrieve();
