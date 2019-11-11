@@ -42,6 +42,9 @@ public class CodegenSecurity {
     public List<Map<String, Object>> scopes;
     public Boolean isCode, isPassword, isApplication, isImplicit;
 
+    public CodegenSecurity() {
+    }
+
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "%s(%s)", name, type);

@@ -61,6 +61,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -3457,10 +3458,14 @@ public class DefaultCodegen implements CodegenConfig {
                 // we need to implement https://openid.net/specs/openid-connect-discovery-1_0.html
                 // and fill out our standard oauth2 stuff https://swagger.io/docs/specification/authentication/oauth2/
                 // from .well-known/openid-configuration
-                // ???
-                cs.isOAuth = true;
-                cs.isCode = true;
-                cs.flow = "accessCode";
+
+                try {
+                    OpenIdConnect openIdConnect = new OpenIdConnect(this,
+                            securityScheme.getOpenIdConnectUrl()).retrieve();
+                    openIdConnect.addToSecurity(cs);
+                } catch (IOException e) {
+                    throw new RuntimeException("openIdConnect error: " + e, e);
+                }
             }
 
             codegenSecurities.add(cs);
@@ -4464,7 +4469,7 @@ public class DefaultCodegen implements CodegenConfig {
         return new ArrayList<>(requestBody.getContent().keySet()).get(0);
     }
 
-    private void setOauth2Info(CodegenSecurity codegenSecurity, OAuthFlow flow) {
+    void setOauth2Info(CodegenSecurity codegenSecurity, OAuthFlow flow) {
         codegenSecurity.authorizationUrl = flow.getAuthorizationUrl();
         codegenSecurity.tokenUrl = flow.getTokenUrl();
 
