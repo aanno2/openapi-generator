@@ -75,7 +75,6 @@ public class OpenIdConnect {
         cs.isOAuth = true;
         cs.authorizationUrl = authorizationUrl;
         cs.tokenUrl = tokenUrl;
-        cs.hasScopes = !scopes.isEmpty();
         cs.scopes = new ArrayList<>();
 
         Scopes flowScopes = new Scopes();

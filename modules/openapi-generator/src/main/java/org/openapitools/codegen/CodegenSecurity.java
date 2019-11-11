@@ -60,7 +60,6 @@ public class CodegenSecurity {
         result.isOAuth = toCopy.isOAuth;
         result.isBasic = toCopy.isBasic;
         result.isApiKey = toCopy.isApiKey;
-        result.hasScopes = toCopy.hasScopes;
 
         return result;
     }
