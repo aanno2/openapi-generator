@@ -3452,6 +3452,11 @@ public class DefaultCodegen implements CodegenConfig {
             } else if (SecurityScheme.Type.OPENIDCONNECT.equals(securityScheme.getType())) {
                 cs.isKeyInHeader = cs.isKeyInQuery = cs.isKeyInCookie = cs.isApiKey = cs.isBasic = false;
                 cs.isOpenIdConnect = true;
+                // TODO: According to
+                // https://swagger.io/docs/specification/authentication/openid-connect-discovery/
+                // we need to implement https://openid.net/specs/openid-connect-discovery-1_0.html
+                // and fill out our standard oauth2 stuff https://swagger.io/docs/specification/authentication/oauth2/
+                // from .well-known/openid-configuration
                 // ???
                 cs.isOAuth = true;
                 cs.isCode = true;
