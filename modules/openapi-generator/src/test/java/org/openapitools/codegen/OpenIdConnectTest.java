@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import static org.testng.AssertJUnit.*;
+
 public class OpenIdConnectTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenIdConnectTest.class);
@@ -23,6 +25,34 @@ public class OpenIdConnectTest {
         CodegenSecurity cs = new CodegenSecurity();
         List<CodegenSecurity> securities = dut.getCodegenSecurities(cs);
 
-        LOGGER.info(securities.toString());
+        assertEquals(4, securities.size());
+
+        CodegenSecurity pw = securities.get(0);
+        assertTrue(pw.isPassword);
+        assertFalse(pw.isImplicit);
+        assertFalse(pw.isApplication);
+        assertFalse(pw.isCode);
+        assertEquals(9, pw.scopes.size());
+
+        CodegenSecurity impl = securities.get(1);
+        assertFalse(impl.isPassword);
+        assertTrue(impl.isImplicit);
+        assertFalse(impl.isApplication);
+        assertFalse(impl.isCode);
+        assertEquals(9, pw.scopes.size());
+
+        CodegenSecurity appl = securities.get(2);
+        assertFalse(appl.isPassword);
+        assertFalse(appl.isImplicit);
+        assertTrue(appl.isApplication);
+        assertFalse(appl.isCode);
+        assertEquals(9, pw.scopes.size());
+
+        CodegenSecurity accessCode = securities.get(3);
+        assertFalse(accessCode.isPassword);
+        assertFalse(accessCode.isImplicit);
+        assertFalse(accessCode.isApplication);
+        assertTrue(accessCode.isCode);
+        assertEquals(9, pw.scopes.size());
     }
 }

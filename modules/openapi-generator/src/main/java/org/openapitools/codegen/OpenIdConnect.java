@@ -97,26 +97,38 @@ public class OpenIdConnect {
             CodegenSecurity csPassword = CodegenSecurity.copy(cs);
             codegen.setOauth2Info(csPassword, flow);
             csPassword.isPassword = true;
+            csPassword.isImplicit = false;
+            csPassword.isApplication = false;
+            csPassword.isCode = false;
             csPassword.flow = "password";
             result.add(csPassword);
         }
         if (grantTypes.contains("implicit")) {
             CodegenSecurity csImplicit = CodegenSecurity.copy(cs);
             codegen.setOauth2Info(csImplicit, flow);
+            csImplicit.isPassword = false;
             csImplicit.isImplicit = true;
+            csImplicit.isApplication = false;
+            csImplicit.isCode = false;
             csImplicit.flow = "implicit";
             result.add(csImplicit);
         }
         if (grantTypes.contains("client_credentials")) {
             CodegenSecurity csClient = CodegenSecurity.copy(cs);
             codegen.setOauth2Info(csClient, flow);
+            csClient.isPassword = false;
+            csClient.isImplicit = false;
             csClient.isApplication = true;
+            csClient.isCode = false;
             csClient.flow = "application";
             result.add(csClient);
         }
         if (grantTypes.contains("authorization_code")) {
             CodegenSecurity csCode = CodegenSecurity.copy(cs);
             codegen.setOauth2Info(csCode, flow);
+            csCode.isPassword = false;
+            csCode.isImplicit = false;
+            csCode.isApplication = false;
             csCode.isCode = true;
             csCode.flow = "accessCode";
             result.add(csCode);
