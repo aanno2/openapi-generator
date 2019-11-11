@@ -28,6 +28,7 @@ public class CodegenSecurity {
     public String name;
     public String type;
     public String scheme;
+    // if isOpenIdConnect is true => isOAuth is also true, as Oidc is a (more) standardized way of OAuth2
     public Boolean hasMore, isBasic, isOAuth, isOpenIdConnect, isApiKey;
     // is Basic is true for all http authentication type. Those are to differentiate basic and bearer authentication
     public Boolean isBasicBasic, isBasicBearer;
