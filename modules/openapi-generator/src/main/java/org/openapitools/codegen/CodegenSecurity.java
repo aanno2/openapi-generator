@@ -18,11 +18,7 @@
 package org.openapitools.codegen;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class CodegenSecurity {
     public String name;
@@ -41,6 +37,33 @@ public class CodegenSecurity {
     public String flow, authorizationUrl, tokenUrl;
     public List<Map<String, Object>> scopes;
     public Boolean isCode, isPassword, isApplication, isImplicit;
+
+    public static CodegenSecurity copy(CodegenSecurity toCopy) {
+        CodegenSecurity result = new CodegenSecurity();
+        if (toCopy.vendorExtensions != null) {
+            result.vendorExtensions = new HashMap<>(toCopy.vendorExtensions);
+        }
+        result.scopes = new ArrayList<>();
+        if (toCopy.scopes != null) {
+            for (Map<String, Object> m : toCopy.scopes) {
+                result.scopes.add(new HashMap<>(m));
+            }
+        }
+
+        result.authorizationUrl = toCopy.authorizationUrl;
+        result.flow = toCopy.flow;
+        result.tokenUrl = toCopy.tokenUrl;
+
+        result.name = toCopy.name;
+        result.isImplicit = toCopy.isImplicit;
+        result.isCode = toCopy.isCode;
+        result.isOAuth = toCopy.isOAuth;
+        result.isBasic = toCopy.isBasic;
+        result.isApiKey = toCopy.isApiKey;
+        result.hasScopes = toCopy.hasScopes;
+
+        return result;
+    }
 
     public CodegenSecurity() {
     }

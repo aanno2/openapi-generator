@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 public class OpenIdConnectTest {
 
@@ -20,8 +21,8 @@ public class OpenIdConnectTest {
         URL config = Thread.currentThread().getContextClassLoader().getResource(OPENID_CONFIGURATION);
         OpenIdConnect dut = new OpenIdConnect(codegen, config.toExternalForm()).retrieve();
         CodegenSecurity cs = new CodegenSecurity();
-        dut.addToSecurity(cs);
+        List<CodegenSecurity> securities = dut.getCodegenSecurities(cs);
 
-        LOGGER.info(cs.toString());
+        LOGGER.info(securities.toString());
     }
 }

@@ -67,7 +67,8 @@ public class OpenIdConnect {
         return this;
     }
 
-    public void addToSecurity(CodegenSecurity cs) {
+    public List<CodegenSecurity> getCodegenSecurities(CodegenSecurity toCopy) {
+        CodegenSecurity cs = CodegenSecurity.copy(toCopy);
         // cs.name = "openIdConnect";
         cs.isKeyInHeader = cs.isKeyInQuery = cs.isKeyInCookie = cs.isApiKey = cs.isBasic = false;
         cs.isOpenIdConnect = true;
@@ -75,6 +76,7 @@ public class OpenIdConnect {
         cs.authorizationUrl = authorizationUrl;
         cs.tokenUrl = tokenUrl;
         cs.hasScopes = !scopes.isEmpty();
+        cs.scopes = new ArrayList<>();
 
         Scopes flowScopes = new Scopes();
         for (String s: scopes) {
@@ -83,40 +85,46 @@ public class OpenIdConnect {
         }
         OAuthFlow flow = new OAuthFlow();
         flow = flow.authorizationUrl(authorizationUrl).tokenUrl(tokenUrl).scopes(flowScopes);
-        // cs.scopes = ;
+        cs.scopes.add(new HashMap<>(flowScopes));
 
         if (grantTypes.isEmpty()) {
             throw new RuntimeException("missing oauth flow in " + cs.name);
         }
+
+        List<CodegenSecurity> result = new ArrayList<>();
         // Can be all of this at the same time!
-        boolean grantTypeSet = false;
         if (grantTypes.contains("password")) {
-            codegen.setOauth2Info(cs, flow);
-            cs.isPassword = true;
-            cs.flow = "password";
-            grantTypeSet = true;
+            CodegenSecurity csPassword = CodegenSecurity.copy(cs);
+            codegen.setOauth2Info(csPassword, flow);
+            csPassword.isPassword = true;
+            csPassword.flow = "password";
+            result.add(csPassword);
         }
         if (grantTypes.contains("implicit")) {
-            codegen.setOauth2Info(cs, flow);
-            cs.isImplicit = true;
-            cs.flow = "implicit";
-            grantTypeSet = true;
+            CodegenSecurity csImplicit = CodegenSecurity.copy(cs);
+            codegen.setOauth2Info(csImplicit, flow);
+            csImplicit.isImplicit = true;
+            csImplicit.flow = "implicit";
+            result.add(csImplicit);
         }
         if (grantTypes.contains("client_credentials")) {
-            codegen.setOauth2Info(cs, flow);
-            cs.isApplication = true;
-            cs.flow = "application";
-            grantTypeSet = true;
+            CodegenSecurity csClient = CodegenSecurity.copy(cs);
+            codegen.setOauth2Info(csClient, flow);
+            csClient.isApplication = true;
+            csClient.flow = "application";
+            result.add(csClient);
         }
         if (grantTypes.contains("authorization_code")) {
-            codegen.setOauth2Info(cs, flow);
-            cs.isCode = true;
-            cs.flow = "accessCode";
-            grantTypeSet = true;
+            CodegenSecurity csCode = CodegenSecurity.copy(cs);
+            codegen.setOauth2Info(csCode, flow);
+            csCode.isCode = true;
+            csCode.flow = "accessCode";
+            result.add(csCode);
         }
-        if (!grantTypeSet) {
+        if (result.isEmpty()) {
             throw new RuntimeException("Could not identify any openIdConnect flow in " + cs.name);
         }
+        return result;
     }
 
 }

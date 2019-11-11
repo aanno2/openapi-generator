@@ -3415,6 +3415,8 @@ public class DefaultCodegen implements CodegenConfig {
                 cs.isKeyInHeader = securityScheme.getIn() == SecurityScheme.In.HEADER;
                 cs.isKeyInQuery = securityScheme.getIn() == SecurityScheme.In.QUERY;
                 cs.isKeyInCookie = securityScheme.getIn() == SecurityScheme.In.COOKIE;  //it assumes a validation step prior to generation. (cookie-auth supported from OpenAPI 3.0.0)
+
+                codegenSecurities.add(cs);
             } else if (SecurityScheme.Type.HTTP.equals(securityScheme.getType())) {
                 cs.isKeyInHeader = cs.isKeyInQuery = cs.isKeyInCookie = cs.isApiKey = cs.isOAuth = false;
                 cs.isBasic = true;
@@ -3424,6 +3426,8 @@ public class DefaultCodegen implements CodegenConfig {
                     cs.isBasicBearer = true;
                     cs.bearerFormat = securityScheme.getBearerFormat();
                 }
+
+                codegenSecurities.add(cs);
             } else if (SecurityScheme.Type.OAUTH2.equals(securityScheme.getType())) {
                 cs.isKeyInHeader = cs.isKeyInQuery = cs.isKeyInCookie = cs.isApiKey = cs.isBasic = false;
                 cs.isOAuth = true;
@@ -3431,6 +3435,7 @@ public class DefaultCodegen implements CodegenConfig {
                 if (securityScheme.getFlows() == null) {
                     throw new RuntimeException("missing oauth flow in " + cs.name);
                 }
+                // TODO: Like in the openIdConnect case this could be more that one flow
                 if (flows.getPassword() != null) {
                     setOauth2Info(cs, flows.getPassword());
                     cs.isPassword = true;
@@ -3450,10 +3455,11 @@ public class DefaultCodegen implements CodegenConfig {
                 } else {
                     throw new RuntimeException("Could not identify any oauth2 flow in " + cs.name);
                 }
+
+                codegenSecurities.add(cs);
             } else if (SecurityScheme.Type.OPENIDCONNECT.equals(securityScheme.getType())) {
                 cs.isKeyInHeader = cs.isKeyInQuery = cs.isKeyInCookie = cs.isApiKey = cs.isBasic = false;
                 cs.isOpenIdConnect = true;
-                // TODO: According to
                 // https://swagger.io/docs/specification/authentication/openid-connect-discovery/
                 // we need to implement https://openid.net/specs/openid-connect-discovery-1_0.html
                 // and fill out our standard oauth2 stuff https://swagger.io/docs/specification/authentication/oauth2/
@@ -3461,13 +3467,12 @@ public class DefaultCodegen implements CodegenConfig {
                 try {
                     OpenIdConnect openIdConnect = new OpenIdConnect(this,
                             securityScheme.getOpenIdConnectUrl()).retrieve();
-                    openIdConnect.addToSecurity(cs);
+                    List<CodegenSecurity> securities = openIdConnect.getCodegenSecurities(cs);
+                    codegenSecurities.addAll(securities);
                 } catch (IOException e) {
                     throw new RuntimeException("openIdConnect error: " + e, e);
                 }
             }
-
-            codegenSecurities.add(cs);
         }
 
         // sort auth methods to maintain the same order
