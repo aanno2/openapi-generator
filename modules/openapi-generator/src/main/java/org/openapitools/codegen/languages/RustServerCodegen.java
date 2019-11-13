@@ -758,7 +758,7 @@ public class RustServerCodegen extends DefaultCodegen implements CodegenConfig {
                         headerAuthMethods = true;
                     }
 
-                    if (s.isBasicBasic || s.isBasicBearer || s.isOAuth) {
+                    if (s.isBasicBasic || s.isBasicBearer || s.isOAuth || s.isOpenIdConnect) {
                         headerAuthMethods = true;
                     }
                 }

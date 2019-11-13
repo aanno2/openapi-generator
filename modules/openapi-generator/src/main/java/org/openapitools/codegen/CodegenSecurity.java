@@ -18,17 +18,14 @@
 package org.openapitools.codegen;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class CodegenSecurity {
     public String name;
     public String type;
     public String scheme;
-    public Boolean hasMore, isBasic, isOAuth, isApiKey;
+    // if isOpenIdConnect is true => isOAuth is also true, as Oidc is a (more) standardized way of OAuth2
+    public Boolean hasMore, isBasic, isOAuth, isOpenIdConnect, isApiKey;
     // is Basic is true for all http authentication type. Those are to differentiate basic and bearer authentication
     public Boolean isBasicBasic, isBasicBearer;
     public String bearerFormat;
@@ -40,6 +37,36 @@ public class CodegenSecurity {
     public String flow, authorizationUrl, tokenUrl;
     public List<Map<String, Object>> scopes;
     public Boolean isCode, isPassword, isApplication, isImplicit;
+
+    public static CodegenSecurity copy(CodegenSecurity toCopy) {
+        CodegenSecurity result = new CodegenSecurity();
+        if (toCopy.vendorExtensions != null) {
+            result.vendorExtensions = new HashMap<>(toCopy.vendorExtensions);
+        }
+        result.scopes = new ArrayList<>();
+        if (toCopy.scopes != null) {
+            for (Map<String, Object> m : toCopy.scopes) {
+                result.scopes.add(new HashMap<>(m));
+            }
+        }
+
+        result.authorizationUrl = toCopy.authorizationUrl;
+        result.flow = toCopy.flow;
+        result.tokenUrl = toCopy.tokenUrl;
+
+        result.name = toCopy.name;
+        result.isImplicit = toCopy.isImplicit;
+        result.isCode = toCopy.isCode;
+        result.isOpenIdConnect = toCopy.isOpenIdConnect;
+        result.isOAuth = toCopy.isOAuth;
+        result.isBasic = toCopy.isBasic;
+        result.isApiKey = toCopy.isApiKey;
+
+        return result;
+    }
+
+    public CodegenSecurity() {
+    }
 
     @Override
     public String toString() {
@@ -61,6 +88,7 @@ public class CodegenSecurity {
             Objects.equals(isBasicBearer, that.isBasicBearer) &&
             Objects.equals(bearerFormat, that.bearerFormat) &&
             Objects.equals(isOAuth, that.isOAuth) &&
+            Objects.equals(isOpenIdConnect, that.isOpenIdConnect) &&
             Objects.equals(isApiKey, that.isApiKey) &&
             Objects.equals(vendorExtensions, that.vendorExtensions) &&
             Objects.equals(keyParamName, that.keyParamName) &&
@@ -87,6 +115,7 @@ public class CodegenSecurity {
             isBasicBearer,
             bearerFormat,
             isOAuth,
+            isOpenIdConnect,
             isApiKey,
             vendorExtensions,
             keyParamName,
@@ -113,6 +142,7 @@ public class CodegenSecurity {
         filteredSecurity.isBasicBasic = isBasicBasic;
         filteredSecurity.isBasicBearer = isBasicBearer;
         filteredSecurity.isApiKey = isApiKey;
+        filteredSecurity.isOpenIdConnect = isOpenIdConnect;
         filteredSecurity.isOAuth = isOAuth;
         filteredSecurity.keyParamName = keyParamName;
         filteredSecurity.isCode = isCode;

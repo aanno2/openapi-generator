@@ -847,6 +847,10 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
                 bundle.put("hasOAuthMethods", true);
                 bundle.put("oauthMethods", getOAuthMethods(authMethods));
             }
+            if (hasOpenIdConnectMethods(authMethods)) {
+                bundle.put("hasOpenIdConnectMethods", true);
+                bundle.put("openIdConnectMethods", getOpenIdConnectMethods(authMethods));
+            }
 
             if (hasBearerMethods(authMethods)) {
                 bundle.put("hasBearerMethods", true);
@@ -1321,6 +1325,16 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
         return false;
     }
 
+    private boolean hasOpenIdConnectMethods(List<CodegenSecurity> authMethods) {
+        for (CodegenSecurity cs : authMethods) {
+            if (Boolean.TRUE.equals(cs.isOpenIdConnect)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private boolean hasBearerMethods(List<CodegenSecurity> authMethods) {
         for (CodegenSecurity cs : authMethods) {
             if (Boolean.TRUE.equals(cs.isBasicBearer)) {
@@ -1342,4 +1356,17 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
 
         return oauthMethods;
     }
+
+    private List<CodegenSecurity> getOpenIdConnectMethods(List<CodegenSecurity> authMethods) {
+        List<CodegenSecurity> oauthMethods = new ArrayList<>();
+
+        for (CodegenSecurity cs : authMethods) {
+            if (Boolean.TRUE.equals(cs.isOpenIdConnect)) {
+                oauthMethods.add(cs);
+            }
+        }
+
+        return oauthMethods;
+    }
+
 }
